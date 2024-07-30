@@ -42,7 +42,7 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 
 ## Dataset
 
-The Dataset Used to Tune the Model can be accessd [here](https://docs.google.com/spreadsheets/d/1Elf0wP54e-p8rb2gVWGdPU8-c83IIXZcT8o7TPrylJ8/edit?usp=sharing )
+The Dataset Used to Tune the Model can be accessd [here](Dataset/Mental_convo.xlsx)
 
 The Data is Originally Sourced from here: [Amod/mental_health_counseling_conversations](https://huggingface.co/datasets/Amod/mental_health_counseling_conversations)
 
