@@ -34,6 +34,55 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 
 --------------------------
 
+## Requirements
+- google account
+- google cloud account
+- gcp cli sdk
+
+---------------------------
+
+## Steps to Use the Model
+
+- Get the client_secret.json file by contacting the developers at empathia.dev@gmail.com
+- Paste the content of the client_secret.json as a secret within the colab Environment with the name 'CLIENT_SECRET'.
+- Ask the developers to add you as a tester by providing your gmail ID.
+- Open [MCG.ipynb](Mcg.ipynb) in a google colab Environment.
+- Upload the [app.py](app.py), [chatbot.py](chatbot.py), [db.py](db.py), [config.ini](config.ini) into the google colab environment.
+- In [config.ini](config.ini), provide your mongo db connection string.
+- Run the Cells in the Colab Environment.
+
+  - After Executing the Second Cell in the colab, you will be asked to Enter the output of the above comand. Copy the above command as shown in the snapshot:
+    
+ ![Screenshot 2024-07-30 202750](https://github.com/user-attachments/assets/c9533674-d8ec-4e7b-aa9b-5327096b58a1)
+
+ - Paste the copied command into the CMD of your system (its Important that GOOGLE CLI SDK Had to be Installed), click on Enter, type 'y' and click enter:
+   
+   ![Screenshot 2024-07-30 203036](https://github.com/user-attachments/assets/81d72644-f25a-465c-96f5-4d283ffe1b08)
+   
+ - You will be redirected to a google sign in page, click on continue, give all the permissions required and click on continue, you should be asle to see this Interface:
+   
+   ![Screenshot 2024-07-30 203002](https://github.com/user-attachments/assets/de8df443-3cbd-46d5-b0c8-027cb9a531a5)
+
+ - After that, visit to your CMD, you should have got this Interface shown in the snapshot, copy the output shown in the snapshot.
+
+   ![Screenshot 2024-07-30 203118](https://github.com/user-attachments/assets/895ae487-c853-467d-9ac6-4bd750c8d60f)
+
+ - Paste the copied link in the colab environment:
+   
+   ![Screenshot 2024-07-30 203141](https://github.com/user-attachments/assets/79fa0438-7964-415e-9a89-4710a7fa3c14)
+   
+  - After this, the authentication will be successfull and you will get a confirmation:
+
+    ![Screenshot 2024-07-30 203203](https://github.com/user-attachments/assets/73fa232e-7105-42ae-baf3-02d01df48c3d)
+
+- run the streamlit app in the local tunnel, paste the external URL IP  as Tunnel Password in the Tunnel Interface, you should be able to access the Application.
+
+
+
+
+
+
+
 ## Training Details
 
 ![Screenshot 2024-07-29 002435](https://github.com/user-attachments/assets/02534868-4779-45ea-9da4-275ee5602629)
