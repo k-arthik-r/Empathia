@@ -75,7 +75,7 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 
     ![Screenshot 2024-07-30 203203](https://github.com/user-attachments/assets/73fa232e-7105-42ae-baf3-02d01df48c3d)
 
-- run the streamlit app in the local tunnel, paste the external URL IP  as Tunnel Password in the Tunnel Interface, you should be able to access the Application.
+- Run the streamlit app in the local tunnel, paste the external URL IP  as Tunnel Password in the Tunnel Interface, you should be able to access the Application.
 
 
 
