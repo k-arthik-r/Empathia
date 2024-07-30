@@ -40,6 +40,14 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 - google cloud account
 - gcp CLI SDK
 
+--------------------------
+
+## Dataset
+
+The Dataset Used to Tune the Model can be accessd [here](https://docs.google.com/spreadsheets/d/1Elf0wP54e-p8rb2gVWGdPU8-c83IIXZcT8o7TPrylJ8/edit?usp=sharing )
+
+The Data is Originally Sourced from here: [Amod/mental_health_counseling_conversations](https://huggingface.co/datasets/Amod/mental_health_counseling_conversations)
+
 ---------------------------
 
 ## Steps to Use the Model
@@ -113,13 +121,6 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 
 ![Screenshot 2024-07-29 002435](https://github.com/user-attachments/assets/02534868-4779-45ea-9da4-275ee5602629)
 
---------------------------
-
-## Dataset
-
-The Dataset Used to Tune the Model can be accessd [here](https://docs.google.com/spreadsheets/d/1Elf0wP54e-p8rb2gVWGdPU8-c83IIXZcT8o7TPrylJ8/edit?usp=sharing )
-
-The Data is Originally Sourced from here: [Amod/mental_health_counseling_conversations](https://huggingface.co/datasets/Amod/mental_health_counseling_conversations)
 
 ---------------------------
 
