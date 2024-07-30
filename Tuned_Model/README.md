@@ -51,37 +51,62 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 - In [config.ini](config.ini), provide your mongo db connection string.
 - Run the Cells in the Colab Environment.
 
-  - After Executing the Second Cell in the colab, you will be asked to Enter the output of the above comand. Copy the above command as shown in the snapshot:
+- After Executing the Second Cell in the colab, you will be asked to Enter the output of the above comand. Copy the above command as shown in the snapshot:
     
- ![Screenshot 2024-07-30 202750](https://github.com/user-attachments/assets/c9533674-d8ec-4e7b-aa9b-5327096b58a1)
+   ![Screenshot 2024-07-30 202750](https://github.com/user-attachments/assets/c9533674-d8ec-4e7b-aa9b-5327096b58a1)
 
- - Paste the copied command into the CMD of your system (its Important that GOOGLE CLI SDK Had to be Installed), click on Enter, type 'y' and click enter:
+- Paste the copied command into the CMD of your system (its Important that GOOGLE CLI SDK Had to be Installed), click on Enter, type 'y' and click enter:
    
    ![Screenshot 2024-07-30 203036](https://github.com/user-attachments/assets/81d72644-f25a-465c-96f5-4d283ffe1b08)
    
- - You will be redirected to a google sign in page, click on continue, give all the permissions required and click on continue, you should be asle to see this Interface:
+- You will be redirected to a google sign in page, click on continue, give all the permissions required and click on continue, you should be asle to see this Interface:
    
-   ![Screenshot 2024-07-30 203002](https://github.com/user-attachments/assets/de8df443-3cbd-46d5-b0c8-027cb9a531a5)
+    ![Screenshot 2024-07-30 203002](https://github.com/user-attachments/assets/de8df443-3cbd-46d5-b0c8-027cb9a531a5)
 
- - After that, visit to your CMD, you should have got this Interface shown in the snapshot, copy the output shown in the snapshot.
+- After that, visit to your CMD, you should have got this Interface shown in the snapshot, copy the output shown in the snapshot.
 
    ![Screenshot 2024-07-30 203118](https://github.com/user-attachments/assets/895ae487-c853-467d-9ac6-4bd750c8d60f)
 
- - Paste the copied link in the colab environment:
+- Paste the copied link in the colab environment:
    
    ![Screenshot 2024-07-30 203141](https://github.com/user-attachments/assets/79fa0438-7964-415e-9a89-4710a7fa3c14)
    
-  - After this, the authentication will be successfull and you will get a confirmation:
+- After this, the authentication will be successfull and you will get a confirmation:
 
     ![Screenshot 2024-07-30 203203](https://github.com/user-attachments/assets/73fa232e-7105-42ae-baf3-02d01df48c3d)
 
 - Run the streamlit app in the local tunnel, paste the external URL IP  as Tunnel Password in the Tunnel Interface, you should be able to access the Application.
 
+-------------------------------
+
+## Application Usage
+
+- Create a New Account by providing appropriate details.
+  
+  ![Screenshot 2024-07-30 204722](https://github.com/user-attachments/assets/852bc1c6-90ff-4cb1-a0cb-df0a3f332f02)
 
 
+- Login to the using the credentials.
+  
+  ![Screenshot 2024-07-30 204800](https://github.com/user-attachments/assets/53333689-bb40-4d13-b29b-f1ebcc46db92)
 
 
+- Use the Chatbot Interface to share your feelings.
+  
+  ![Screenshot 2024-07-30 204945](https://github.com/user-attachments/assets/9138f634-2ef2-4474-be63-d7cb35da9720)
 
+
+- Review your Previously asked query and the corresponding Response.
+  
+  ![Screenshot 2024-07-30 205101](https://github.com/user-attachments/assets/6c7eb697-06e9-4662-93d7-7fce35a48938)
+
+
+- Delete your Account.
+  
+  ![Screenshot 2024-07-30 205138](https://github.com/user-attachments/assets/766c97ca-98e1-462b-ba30-9c7b17fd040f)
+
+
+-----------------------
 
 ## Training Details
 
