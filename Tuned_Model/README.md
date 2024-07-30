@@ -37,7 +37,7 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 ## Requirements
 - google account
 - google cloud account
-- gcp cli sdk
+- gcp CLI SDK
 
 ---------------------------
 
@@ -46,7 +46,7 @@ Empathia is here to support you every step of the way. Embrace the journey towar
 - Get the client_secret.json file by contacting the developers at empathia.dev@gmail.com
 - Paste the content of the client_secret.json as a secret within the colab Environment with the name 'CLIENT_SECRET'.
 - Ask the developers to add you as a tester by providing your gmail ID.
-- Open [MCG.ipynb](Mcg.ipynb) in a google colab Environment.
+- Open [MCG.ipynb](MCG.ipynb) in a google colab Environment.
 - Upload the [app.py](app.py), [chatbot.py](chatbot.py), [db.py](db.py), [config.ini](config.ini) into the google colab environment.
 - In [config.ini](config.ini), provide your mongo db connection string.
 - Run the Cells in the Colab Environment.
