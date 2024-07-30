@@ -120,10 +120,9 @@ The Dataset Used to Tune the Model can be accessd [here](https://docs.google.com
 
 The Data is Originally Sourced from here: [Amod/mental_health_counseling_conversations](https://huggingface.co/datasets/Amod/mental_health_counseling_conversations)
 
+---------------------------
 
-----------------------------
+## Feedback
 
-
-## License
-
-[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
+If you have any feedback, please reach out to us at empathia.dev@gmail.com .
+You are also welcomed to add new features by creating Pull Requests.
