@@ -61,7 +61,7 @@ Gemini API Key
 
 All The Modules/Libraries Used in the Project can be installed using [requirements.txt](requirements.txt)
 
-- Streamlit-1.36.0
+- Streamlit
 - Pymongo
 - google.generativeai
 - configparser 
@@ -151,25 +151,32 @@ To access the Fine Tuned Model please follow the steps provided in [Tuned_Model]
   
   ![Screenshot 2024-07-30 204722](https://github.com/user-attachments/assets/852bc1c6-90ff-4cb1-a0cb-df0a3f332f02)
 
+<br>
+
 
 - Login to the using the credentials.
   
   ![Screenshot 2024-07-30 204800](https://github.com/user-attachments/assets/53333689-bb40-4d13-b29b-f1ebcc46db92)
 
+<br>
 
 - Use the Chatbot Interface to share your feelings.
   
   ![Screenshot 2024-07-30 204945](https://github.com/user-attachments/assets/9138f634-2ef2-4474-be63-d7cb35da9720)
 
+<br>
 
 - Review your Previously asked query and the corresponding Response.
   
   ![Screenshot 2024-07-30 205101](https://github.com/user-attachments/assets/6c7eb697-06e9-4662-93d7-7fce35a48938)
 
+<br>
 
 - Delete your Account.
   
   ![Screenshot 2024-07-30 205138](https://github.com/user-attachments/assets/766c97ca-98e1-462b-ba30-9c7b17fd040f)
+
+  <br>
   
 ----------------------------
 
