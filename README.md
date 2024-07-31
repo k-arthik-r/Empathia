@@ -103,8 +103,9 @@ To access the Fine Tuned Model please follow the steps provided in [Tuned_Model]
 ## How to Run?
 
 - Intialize a Git Repository.
+
   
-```bash
+``` bash
   git init
 ```
 
@@ -114,13 +115,24 @@ To access the Fine Tuned Model please follow the steps provided in [Tuned_Model]
   git clone https://github.com/k-arthik-r/Empathia.git
 ```
 
-- Crete a Virtual Environment named env and Activate it(PowerShell)
+- Navigate to the root Directory of the project and Create a python virtual environment.
   
 ```bash
-  python -m venv env
+  python -m venv venv
 
-  .\env\Scripts\Activate.ps1
 ```
+- Activate the Environment:
+
+  - for Powershell
+
+  ```bash
+    .\venv\Scripts\Activate.ps1
+  ```
+  - for CommandPrompt
+
+  ```bash
+    .\venv\Scripts\activate.bat
+  ```
 
 - Install all the Modules Present in [requirements](requirements.txt)
   
@@ -128,12 +140,19 @@ To access the Fine Tuned Model please follow the steps provided in [Tuned_Model]
   pip install -r requirements.txt
 ```
 
-- Comeplete the Above setup phase and add all the required credentials in [config.ini](config.ini)
+- paste your Mongo DB Connection String and Gemini API Key inside config.ini file in the root directory. [Here](config.ini)
 
+```bash
+  CONNECTIONSTRING = <mongo-db-connection-string>
+  APIKEY = <gemini-api-key>
+```
+
+- run your application using,
   
 ```bash
   streamlit run app.py
 ```
+
 
 
 -------------------------
