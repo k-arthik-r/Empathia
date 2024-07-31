@@ -73,7 +73,7 @@ All The Modules/Libraries Used in the Project can be installed using [requiremen
 ## Setup
 
 ### Database
-Use the Database Configuration File to Setup all the Collections with the name given in the Document.
+Use the below configurations for MongoDB
 <br>
 - Database Name: Chatbot
 - Total Number of Collections: 2
@@ -87,15 +87,17 @@ Add your Mongo DB Connection String [Here](config.ini)
 <br>
 
 ### Gemini API key
-Get the Gemini API key [Here](https://ai.google.dev/gemini-api/docs/api-key)
+Get your Gemini API key [Here](https://ai.google.dev/gemini-api/docs/api-key)
 <br>
-<a href="https://ai.google.dev/gemini-api/docs/api-key" alt="Gemini API key">
-      <img src="https://custom-icon-badges.demolab.com/badge/Gemini-FFFFFF?style=for-the-badge&logo=gemini"></a> &nbsp;
 
-
-Add the API key [Here](config.ini)
+Add your API key [Here](config.ini)
 
 <br>
+
+### Fine Tuned Model
+
+To access the Fine Tuned Model please follow the steps provided in [Tuned_Model](Tuned_Model/README.md)
+
 
 --------------------------
 ## How to Run?
@@ -130,7 +132,7 @@ Add the API key [Here](config.ini)
 
   
 ```bash
-  python app.py
+  streamlit run app.py
 ```
 
 
@@ -143,7 +145,7 @@ Add the API key [Here](config.ini)
 
 -------------------------
 
-## Application Usage
+## Application Overview
 
 - Create a New Account by providing appropriate details.
   
@@ -170,11 +172,7 @@ Add the API key [Here](config.ini)
   ![Screenshot 2024-07-30 205138](https://github.com/user-attachments/assets/766c97ca-98e1-462b-ba30-9c7b17fd040f)
   
 ----------------------------
-## Fine Tuned Model
 
-To access the Fine Tuned Model please follow the steps provided [Here](Tuned_Model/README.md)
-
-----------------------------
 
 
 ## License
