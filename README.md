@@ -96,7 +96,7 @@ Add your API key [Here](config.ini)
 
 ### Fine Tuned Model
 
-To access the Fine Tuned Model please follow the steps provided in [Tuned_Model](Tuned_Model/README.md)
+To access the Fine Tuned Model please follow the steps provided in [Tuned_Model](Tuned_Model)
 
 
 --------------------------
