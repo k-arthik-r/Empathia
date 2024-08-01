@@ -9,6 +9,7 @@ try:
 except Exception as e:
     print(e)
 
+# Initialize session state variables
 try:
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = False
@@ -23,12 +24,33 @@ except Exception as e:
 
 
 def switch_page(page):
+    """
+    Switches the current page in the session state.
+
+    Args:
+        page (str): The name of the page to switch to.
+        
+    Raises:
+        Exception: If there is an error while switching the page, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.session_state.page = page
     except Exception as e:
         st.toast("Something Went Wrong!! - Error SWX")
 
 def login_page():
+    """
+    Renders the login page where users can input their email and password to log in.
+    
+    The function handles user input for email and password, and performs authentication.
+    If authentication is successful, it switches to the chatbot page.
+    If authentication fails, an error message is displayed.
+
+    Raises:
+        Exception: If there is an error during the login process, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.subheader("Login")
 
@@ -59,6 +81,17 @@ def login_page():
 
 
 def signup_page():
+    """
+    Renders the sign-up page where new users can create an account.
+    
+    The function handles user input for name, email, date of birth, and password.
+    It performs validation to ensure the passwords match and then creates a new account.
+    Appropriate messages are displayed based on the success or failure of account creation.
+
+    Raises:
+        Exception: If there is an error during the sign-up process, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.subheader("Create New Account")
         new_name = st.text_input("Name")
@@ -69,12 +102,12 @@ def signup_page():
 
         if st.button("Submit"):
             if new_password != confirm_new_password:
-                st.error("Password Did not matched!!!")
-            status = create_user(new_name,new_email,new_date, new_password)
+                st.error("Password Did not match!!!")
+            status = create_user(new_name, new_email, new_date, new_password)
             if status == 0:
-                st.error("Account Already Exist!!")
+                st.error("Account Already Exists!!")
             elif status == 1:
-                st.success("Your Accounted has been created successfully")
+                st.success("Your Account has been created successfully")
                 st.info("Go to Login Menu to login")
             else:
                 st.error("Something Went Wrong!!")
@@ -82,6 +115,17 @@ def signup_page():
         st.toast("Something Went Wrong!! - Error SPX")
 
 def forgot_password_page():
+    """
+    Renders the forgot password page where users can reset their password.
+    
+    The function handles user input for email, date of birth, and new password.
+    It performs validation to ensure the new passwords match and then updates the password.
+    Appropriate messages are displayed based on the success or failure of the password reset.
+
+    Raises:
+        Exception: If there is an error during the password reset process, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.subheader("Forgot Password")
         status = 999
@@ -98,12 +142,12 @@ def forgot_password_page():
 
         if st.button("Submit"):
             if new_password != confirm_new_password:
-                st.error("Password Did not matched!!!")
+                st.error("Password Did not match!!!")
             else:
-                status = update_user(new_email,new_date, new_password)
+                status = update_user(new_email, new_date, new_password)
 
             if status == 0:
-                st.error("Account Does't Exist!!")
+                st.error("Account Doesn't Exist!!")
             elif status == 1:
                 st.error("Invalid Credentials!!")
             elif status == 2:
@@ -115,6 +159,16 @@ def forgot_password_page():
         st.toast("Something Went Wrong!! - Error FPX")
 
 def delete_account():
+    """
+    Renders the delete account page where users can delete their account.
+    
+    The function handles user input for email and password and performs account deletion.
+    Appropriate messages are displayed based on the success or failure of account deletion.
+
+    Raises:
+        Exception: If there is an error during the account deletion process, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.subheader("Delete Account")
         email = st.text_input("Enter Email")
@@ -124,11 +178,21 @@ def delete_account():
             if status == 0:
                 st.error("Invalid Credentials!!")
             elif status == 1:
-                    st.success("Account Deleted Successfully!!")
+                st.success("Account Deleted Successfully!!")
     except Exception as e:
         st.toast("Something Went Wrong!! - Error DAC")  
 
 def show_about():
+    """
+    Displays the 'About' page content from the README.md file.
+    
+    The function reads the content of the README.md file and displays it as markdown.
+    Users can go back to the login page by clicking the 'Back' button.
+
+    Raises:
+        Exception: If there is an error while displaying the 'About' content, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         if st.sidebar.button("Back"):
             st.session_state.page = "login"
@@ -141,6 +205,17 @@ def show_about():
         st.toast("Something Went Wrong!! - Error SHB")    
 
 def main():
+    """
+    Main function to handle the page rendering based on the session state.
+    
+    The function displays the appropriate page (login, sign up, forgot password, chatbot, or about) 
+    based on the current session state. It manages the navigation between different pages 
+    and handles user actions like login, sign-up, password reset, and account deletion.
+
+    Raises:
+        Exception: If there is an error during the main function execution, 
+                   an exception is raised and an error toast message is displayed.
+    """
     try:
         st.title("Empathia")
 
