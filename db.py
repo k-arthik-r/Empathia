@@ -6,10 +6,13 @@ config = ConfigParser()
 config.read("config.ini")
 
 # Establish MongoDB connection
-client = MongoClient(config['DATABASE']['CONNECTIONSTRING'])
-db = client[config['DATABASE']['DB']]
-users_collection = db[config['DATABASE']['COLLECTIONUSERS']]
-queries_collection = db[config['DATABASE']['COLLECTIONQUERIES']]
+try:
+    client = MongoClient(config['DATABASE']['CONNECTIONSTRING'])
+    db = client[config['DATABASE']['DB']]
+    users_collection = db[config['DATABASE']['COLLECTIONUSERS']]
+    queries_collection = db[config['DATABASE']['COLLECTIONQUERIES']]
+except Exception as e:
+    print("Data Base Connection Error!!!")
 
 def create_user(new_name, new_email, new_date, new_password) -> int:
     """

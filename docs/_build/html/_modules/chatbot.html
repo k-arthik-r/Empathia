@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>chatbot &mdash; Empathia 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Empathia
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Empathia</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Empathia</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">chatbot</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for chatbot</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="nn">st</span>
+<span class="kn">from</span> <span class="nn">db</span> <span class="kn">import</span> <span class="n">get_user_queries</span><span class="p">,</span> <span class="n">update_user_queries</span><span class="p">,</span> <span class="n">clear_chats</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">google.generativeai</span> <span class="k">as</span> <span class="nn">genai</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;config.ini&quot;</span><span class="p">)</span>
+
+<span class="n">previous_convo</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
+<span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;API&#39;</span><span class="p">][</span><span class="s1">&#39;APIKEY&#39;</span><span class="p">])</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Invalid Key!!!&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="clean_response">
+<a class="viewcode-back" href="../chatbot.html#chatbot.clean_response">[docs]</a>
+<span class="k">def</span> <span class="nf">clean_response</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans the response generated by the AI model by removing any unnecessary prefixes.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        response (str): The raw response from the AI model.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The cleaned response.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Response:&quot;</span><span class="p">):</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;Response:&quot;</span><span class="p">):]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">response</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error CLX&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="response_generator">
+<a class="viewcode-back" href="../chatbot.html#chatbot.response_generator">[docs]</a>
+<span class="k">def</span> <span class="nf">response_generator</span><span class="p">(</span><span class="n">user_query</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a response from the AI model based on the user query and the conversation history.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        user_query (str): The query entered by the user.</span>
+
+<span class="sd">    Yields:</span>
+<span class="sd">        str: The generated response word by word for a streaming effect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;You are Empathia, a digital therapist/psychiatrist  using the Gemini 1.5 Flash model developed by Counsellor. Your purpose is to provide professional support and guidance tailored to the user&#39;s mental health needs. Maintain strict confidentiality and privacy. Respond with empathy, offer professional advice, and suggest coping strategies when appropriate. Do not handle emergency situations; instead, direct users to seek immediate assistance from qualified professionals. Always ask for the user&#39;s name when requested.</span>
+<span class="s2">            Consider previous interactions in the conversation history to maintain continuity and context. Use information from past conversations to provide relevant and coherent responses. If the user references past discussions, acknowledge them and build upon that context.</span>
+<span class="s2">            </span>
+<span class="s2">            Example 1:</span>
+<span class="s2">            User: &quot;I&#39;ve been feeling anxious about my upcoming presentation at work. How can I manage my anxiety?&quot;</span>
+<span class="s2">            Response: &quot;It&#39;s completely normal to feel anxious about a big presentation. As we discussed previously, practicing relaxation techniques like deep breathing or progressive muscle relaxation can help. Additionally, you might want to review the strategies we talked about for managing stress. Preparing thoroughly and rehearsing can boost your confidence. If you need further support, reaching out to a colleague or a therapist might be beneficial.&quot;</span>
+<span class="s2">            Example 2:</span>
+<span class="s2">            User: &quot;I&#39;m struggling with low self-esteem and negative thoughts. What can I do to improve my self-image?&quot;</span>
+<span class="s2">            Response: &quot;Improving self-esteem can be challenging. Reflecting on our earlier conversations, focusing on your strengths and achievements might be a good start. Remember to challenge negative thoughts and practice self-compassion. Engaging in activities you enjoy, as we discussed, can also boost your self-image. If these feelings persist, talking to a mental health professional could provide more tailored support.&quot;</span>
+<span class="s2">            Example 3:</span>
+<span class="s2">            User: &quot;I often feel overwhelmed by my daily responsibilities. How can I better manage my stress?&quot;</span>
+<span class="s2">            Response: &quot;Managing stress from daily responsibilities can be tough. Considering our previous discussions, breaking tasks into smaller steps and prioritizing them can help. Developing a routine that includes relaxation and self-care is also important. Techniques like mindfulness, which we talked about earlier, might be useful. If you continue to feel overwhelmed, discussing it with a therapist might offer additional strategies.&quot;</span>
+
+<span class="s2">            Use the examples above to guide your responses. Address the user&#39;s query with empathy and provide actionable advice or coping strategies. Ensure that responses are supportive and tailored to the user&#39;s specific concerns. Always consider previous interactions to maintain context and continuity in the conversation.</span>
+
+<span class="s2">            Past Conversations:</span>
+<span class="s2">            </span><span class="si">{</span><span class="n">previous_convo</span><span class="si">}</span>
+
+<span class="s2">            User: </span><span class="si">{</span><span class="n">user_query</span><span class="si">}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error PTX&quot;</span><span class="p">)</span>
+
+    <span class="n">generation_config</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+      <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span>
+      <span class="s2">&quot;top_k&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+      <span class="s2">&quot;max_output_tokens&quot;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">safety_settings</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;HARM_CATEGORY_HARASSMENT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;BLOCK_MEDIUM_AND_ABOVE&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;HARM_CATEGORY_HATE_SPEECH&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;BLOCK_MEDIUM_AND_ABOVE&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;HARM_CATEGORY_SEXUALLY_EXPLICIT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;BLOCK_MEDIUM_AND_ABOVE&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;HARM_CATEGORY_DANGEROUS_CONTENT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="s2">&quot;BLOCK_MEDIUM_AND_ABOVE&quot;</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="n">system_instruction</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        Instructions for Interacting with Your Digital Therapist/Psychiatrist:</span>
+
+<span class="s2">        1. Purpose:</span>
+<span class="s2">        - This digital assistant serves as your mental health and therapy companion, providing professional support, guidance, and conversation tailored to your well-being.</span>
+<span class="s2">        - Engage in open-ended conversations or ask specific questions related to your mental health concerns.</span>
+
+<span class="s2">        2. Safety and Privacy:</span>
+<span class="s2">        - Your privacy and confidentiality are of utmost importance. The digital assistant is programmed to maintain strict confidentiality and privacy standards.</span>
+<span class="s2">        - Avoid sharing sensitive personal information that could compromise your privacy or safety.</span>
+
+<span class="s2">        3. Interaction:</span>
+<span class="s2">        - Type your thoughts, feelings, or concerns into the text input area to begin a conversation with your digital therapist/psychiatrist.</span>
+<span class="s2">        - The assistant will respond with supportive, empathetic messages, offering professional guidance, reflections, and coping strategies.</span>
+<span class="s2">        - Always introduce yourself with your name and the name of your therapist/psychiatrist when asked.</span>
+
+<span class="s2">        4. Emergency Situations:</span>
+<span class="s2">        - If you&#39;re experiencing a mental health crisis or emergency, please seek immediate assistance from a qualified mental health professional or emergency services.</span>
+<span class="s2">        - The digital assistant is not equipped to handle emergency situations and should not be relied upon for urgent assistance.</span>
+
+<span class="s2">        5. Model Information:</span>
+<span class="s2">        - The assistant operates on the Gemini 1.5 Flash model developed by Counsellor.</span>
+<span class="s2">        - The model has been configured with specific settings to ensure the quality, safety, and effectiveness of interactions.</span>
+
+<span class="s2">        6.Feedback:</span>
+<span class="s2">        Your feedback is valuable for improving this service and enhancing your experience. Feel free to share your thoughts, suggestions, or concerns with us.</span>
+
+<span class="s2">        Remember, your digital therapist/psychiatrist is here to support you on your journey towards better mental health. Let&#39;s engage in meaningful conversations together!</span>
+
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">GenerativeModel</span><span class="p">(</span>
+            <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;gemini-1.5-flash&quot;</span><span class="p">,</span>
+            <span class="n">generation_config</span><span class="o">=</span><span class="n">generation_config</span><span class="p">,</span>
+            <span class="n">safety_settings</span><span class="o">=</span><span class="n">safety_settings</span><span class="p">,</span>
+            <span class="n">system_instruction</span><span class="o">=</span><span class="n">system_instruction</span>
+        <span class="p">)</span>
+
+        <span class="n">responseraw</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_content</span><span class="p">([</span><span class="n">prompt</span><span class="p">])</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">responseraw</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">word</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error GENX&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="update_db">
+<a class="viewcode-back" href="../chatbot.html#chatbot.update_db">[docs]</a>
+<span class="k">def</span> <span class="nf">update_db</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">answer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the user queries in the database.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        username (str): The username of the user.</span>
+<span class="sd">        question (str): The question asked by the user.</span>
+<span class="sd">        answer (str): The response generated by the AI model.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user_queries</span> <span class="o">=</span> <span class="n">get_user_queries</span><span class="p">(</span><span class="n">username</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">sanitized_question</span> <span class="o">=</span> <span class="n">question</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;__dot__&quot;</span><span class="p">)</span>
+        <span class="n">user_queries</span><span class="p">[</span><span class="n">sanitized_question</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+        <span class="n">update_user_queries</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">user_queries</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error UPDB&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="chatbot_interface">
+<a class="viewcode-back" href="../chatbot.html#chatbot.chatbot_interface">[docs]</a>
+<span class="k">def</span> <span class="nf">chatbot_interface</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Renders the chatbot interface using Streamlit, including the sidebar and chat functionality.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">initial</span> <span class="o">=</span> <span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Name Error!! - Error INP&quot;</span><span class="p">)</span>
+
+    <span class="k">global</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span>    
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">html_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            &lt;div id=&quot;sidebar-content&quot;&gt;</span>
+<span class="s2">                &lt;div id=&quot;initial&quot; style=&quot;</span>
+<span class="s2">                    width: 55px;</span>
+<span class="s2">                    height: 55px;</span>
+<span class="s2">                    background-color: rgb(</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">);</span>
+<span class="s2">                    border-radius: 50%;</span>
+<span class="s2">                    display: flex;</span>
+<span class="s2">                    justify-content: center;</span>
+<span class="s2">                    align-items: center;</span>
+<span class="s2">                    color: white;</span>
+<span class="s2">                    font-size: 20px;</span>
+<span class="s2">                    font-weight: bold;</span>
+<span class="s2">                    user-select: none;&quot;&gt;</span>
+<span class="s2">                    </span><span class="si">{</span><span class="n">initial</span><span class="si">}</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">                &lt;div id=&quot;info&quot;&gt;</span>
+<span class="s2">                    &lt;h2&gt;</span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&lt;/h2&gt;</span>
+<span class="s2">                    &lt;h5&gt;</span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&lt;/h5&gt;</span>
+<span class="s2">                &lt;/div&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error NNF&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &lt;style&gt;</span>
+<span class="sd">        #sidebar-content {</span>
+<span class="sd">            display: flex;</span>
+<span class="sd">            flex-direction:row;</span>
+<span class="sd">            justify-content: center;</span>
+<span class="sd">            align-items:center;</span>
+<span class="sd">            background-color: #0e1117;</span>
+<span class="sd">            color: white;</span>
+<span class="sd">            padding:20px;</span>
+<span class="sd">            margin-bottom: 15px;</span>
+<span class="sd">            border: 1px solid #ccc;</span>
+<span class="sd">            border-radius: 10px;</span>
+<span class="sd">            gap: 15px;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        #logged {</span>
+<span class="sd">            font-size: 12px;</span>
+<span class="sd">            color: grey;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        #loggedin {</span>
+<span class="sd">            font-size: 20px;</span>
+<span class="sd">            color: white;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        #initial {</span>
+<span class="sd">            width: 50%;</span>
+<span class="sd">            height: 100%;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        #info{</span>
+<span class="sd">            width: 60%;</span>
+<span class="sd">            height: 100%;</span>
+<span class="sd">            font-size: 10px</span>
+<span class="sd">        }</span>
+
+<span class="sd">        h2 {</span>
+<span class="sd">            padding: 0px;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        h5 {</span>
+<span class="sd">            padding: 0px;</span>
+<span class="sd">            color: grey;</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &lt;/style&gt;</span>
+<span class="sd">        &lt;br&gt;&lt;br&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Logout&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">del</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">rerun</span><span class="p">()</span> 
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error LOUT&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Clear Chats&quot;</span><span class="p">):</span>
+            <span class="n">clear_chats</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error CLRC&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Questions&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user_queries</span> <span class="o">=</span> <span class="n">get_user_queries</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
+        <span class="n">questions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">user_queries</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">user_queries</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">question</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">questions</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">sidebar</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">question</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">55</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;button_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">selected_question</span> <span class="o">=</span> <span class="n">question</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error QNF&quot;</span><span class="p">)</span>
+
+    <span class="n">st</span><span class="o">.</span><span class="n">subheader</span><span class="p">(</span><span class="s2">&quot;Questionaries&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;selected_question&quot;</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+            <span class="n">selected_question</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">selected_question</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="n">user_queries</span><span class="p">[</span><span class="n">selected_question</span><span class="p">]</span>
+
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="s2">&quot;QA&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    &lt;div style=&quot;color: #FF7900;&quot;&gt;</span>
+<span class="s2">                        &lt;strong&gt;Query:&lt;/strong&gt;&lt;br&gt;</span>
+<span class="s2">                    &lt;/div&gt;</span><span class="si">{</span><span class="n">selected_question</span><span class="si">}</span>
+<span class="s2">                    &lt;div style=&quot;color: #228B22;&quot;&gt;</span>
+<span class="s2">                        &lt;strong&gt;Response:&lt;/strong&gt;&lt;br&gt;</span>
+<span class="s2">                    &lt;/div&gt;</span><span class="si">{</span><span class="n">answer</span><span class="si">}</span><span class="s2"> &lt;br&gt;&lt;br&gt;</span>
+<span class="s2">                &quot;&quot;&quot;</span><span class="p">,</span> <span class="n">unsafe_allow_html</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Close&quot;</span><span class="p">):</span>
+                    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selected_question&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_message</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error QAF&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">prompt</span> <span class="o">:=</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_input</span><span class="p">(</span><span class="s2">&quot;What is up?&quot;</span><span class="p">):</span>
+            <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">})</span>
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_message</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">):</span>
+                <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_message</span><span class="p">(</span><span class="s2">&quot;assistant&quot;</span><span class="p">):</span>
+                <span class="n">response_placeholder</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> 
+                <span class="n">full_response</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">partial_word</span> <span class="ow">in</span> <span class="n">response_generator</span><span class="p">(</span><span class="n">prompt</span><span class="p">):</span>
+                    <span class="n">full_response</span> <span class="o">+=</span> <span class="n">partial_word</span>
+                    <span class="n">response_placeholder</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">full_response</span><span class="p">)</span>
+                <span class="n">cleaned_response</span> <span class="o">=</span> <span class="n">clean_response</span><span class="p">(</span><span class="n">full_response</span><span class="p">)</span>
+                <span class="n">response_placeholder</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">cleaned_response</span><span class="p">)</span> 
+
+                <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">cleaned_response</span><span class="p">})</span>
+                <span class="k">global</span> <span class="n">previous_convo</span>
+                <span class="n">one_convo</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;User: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="se">\n</span><span class="s2">Response: </span><span class="si">{</span><span class="n">cleaned_response</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">previous_convo</span> <span class="o">=</span> <span class="n">previous_convo</span> <span class="o">+</span> <span class="n">one_convo</span>
+                <span class="n">update_db</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">cleaned_response</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error QACF&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">chatbot_interface</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">toast</span><span class="p">(</span><span class="s2">&quot;Something Went Wrong!! - Error CBIF&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Karthik.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
