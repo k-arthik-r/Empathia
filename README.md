@@ -154,13 +154,10 @@ To access the Fine Tuned Model please follow the steps provided in [Tuned_Model]
 ```
 
 
-
 -------------------------
 ## Architecture
 
-
-
-
+![architecture (4)](https://github.com/user-attachments/assets/be7920ec-b882-4958-9ac6-6c2d80fc6b7c)
 
 -------------------------
 
